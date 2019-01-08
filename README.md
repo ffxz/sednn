@@ -3,6 +3,8 @@ deep learning based speech enhancement using keras python
 
 # Authors: YONG XU & QIUQIANG KONG
 
+sining will improve this code
+
 # Goal:
 Make the GPU-C++ code project convert to python code which is much easier for the community to follow and use. The training and decoding code will be unified into the python code. Keras will be used as the toolkit.
 
