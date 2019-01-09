@@ -7,7 +7,8 @@ Modified: -
 import numpy as np
 import os
 import pickle
-import cPickle
+#import cPickle
+import _pickle as cPickle
 import h5py
 import argparse
 import time
@@ -79,6 +80,7 @@ def train(args):
     batch_size = 500
     print("%d iterations / epoch" % int(tr_x.shape[0] / batch_size))
     
+    '''
     # Scale data. 
     if True:
         t1 = time.time()
@@ -95,6 +97,8 @@ def train(args):
         plt.matshow(tr_x[0 : 1000, 0, :].T, origin='lower', aspect='auto', cmap='jet')
         plt.show()
         pause
+    '''
+
         
     # Build model
     (_, n_concat, n_freq) = tr_x.shape

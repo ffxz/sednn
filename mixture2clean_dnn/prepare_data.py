@@ -19,6 +19,7 @@ from sklearn import preprocessing
 
 import prepare_data as pp_data
 import config as cfg
+import librosa
 
 
 def create_folder(fd):
@@ -100,7 +101,7 @@ def create_mixture_csv(args):
                 nosie_offset = noise_onset + len_speech
             
             if cnt % 100 == 0:
-                print cnt
+                print(cnt)
                 
             cnt += 1
             f.write("%s\t%s\t%d\t%d\n" % (speech_na, noise_na, noise_onset, nosie_offset))
@@ -135,7 +136,8 @@ def calculate_mixture_features(args):
     
     t1 = time.time()
     cnt = 0
-    for i1 in xrange(1, len(lis)):
+    #this row change xrange to range, if it occurs error, please add list
+    for i1 in range(1, len(lis)):
         [speech_na, noise_na, noise_onset, noise_offset] = lis[i1]
         noise_onset = int(noise_onset)
         noise_offset = int(noise_offset)
