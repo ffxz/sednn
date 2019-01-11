@@ -4,6 +4,7 @@ Author:   Qiuqiang Kong
 Created:  2017.12.22
 Modified: -
 """
+import tensorflow
 import numpy as np
 import os
 import pickle
@@ -20,15 +21,14 @@ import config as cfg
 from data_generator import DataGenerator
 from spectrogram_to_wave import recover_wav
 
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten
-from keras.optimizers import Adam
-from keras.models import load_model
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import load_model
 
 
 def eval(model, gen, x, y):
-    """Validation function. 
-    
+    """Validation function.
     Args:
       model: keras model. 
       gen: object, data generator. 
@@ -51,10 +51,9 @@ def eval(model, gen, x, y):
     loss = pp_data.np_mean_absolute_error(y_all, pred_all)
     return loss
     
-
+#训练的时候是执行train
 def train(args):
-    """Train the neural network. Write out model every several iterations. 
-    
+    """Train the neural network. Write out model every several iterations.
     Args:
       workspace: str, path of workspace. 
       tr_snr: float, training SNR. 
@@ -70,7 +69,7 @@ def train(args):
     # Load data. 
     t1 = time.time()
     tr_hdf5_path = os.path.join(workspace, "packed_features", "spectrogram", "train", "%ddb" % int(tr_snr), "data.h5")
-    te_hdf5_path = os.path.join(workspace, "packed_features", "spectrogram", "test", "%ddb" % int(te_snr), "data.h5")
+    te_hdf5_path = os.path.join(workspace, "packed_features", "spectrogram", "train", "%ddb" % int(te_snr), "data.h5")
     (tr_x, tr_y) = pp_data.load_hdf5(tr_hdf5_path)
     (te_x, te_y) = pp_data.load_hdf5(te_hdf5_path)
     print(tr_x.shape, tr_y.shape)
@@ -141,7 +140,7 @@ def train(args):
                     'tr_loss': tr_loss, 
                     'te_loss': te_loss, }
     stat_path = os.path.join(stats_dir, "%diters.p" % iter)
-    cPickle.dump(stat_dict, open(stat_path, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+    pickle.dump(stat_dict, open(stat_path, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
     
     # Train. 
     t1 = time.time()
@@ -160,7 +159,7 @@ def train(args):
                          'tr_loss': tr_loss, 
                          'te_loss': te_loss, }
             stat_path = os.path.join(stats_dir, "%diters.p" % iter)
-            cPickle.dump(stat_dict, open(stat_path, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+            pickle.dump(stat_dict, open(stat_path, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
             
         # Save model. 
         if iter % 5000 == 0:

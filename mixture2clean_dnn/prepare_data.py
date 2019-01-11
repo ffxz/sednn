@@ -13,7 +13,7 @@ import time
 import matplotlib.pyplot as plt
 from scipy import signal
 import pickle
-import cPickle
+import _pickle as cPickle
 import h5py
 from sklearn import preprocessing
 
@@ -109,7 +109,7 @@ def create_mixture_csv(args):
     print(out_csv_path)
     print("Create %s mixture csv finished!" % data_type)
     
-###
+###计算特征
 def calculate_mixture_features(args):
     """Calculate spectrogram for mixed, speech and noise audio. Then write the 
     features to disk. 
@@ -130,7 +130,7 @@ def calculate_mixture_features(args):
     
     # Open mixture csv. 
     mixture_csv_path = os.path.join(workspace, "mixture_csvs", "%s.csv" % data_type)
-    with open(mixture_csv_path, 'rb') as f:
+    with open(mixture_csv_path, 'r') as f:
         reader = csv.reader(f, delimiter='\t')
         lis = list(reader)
     
@@ -163,7 +163,8 @@ def calculate_mixture_features(args):
         scaler = get_amplitude_scaling_factor(speech_audio, noise_audio, snr=snr)
         speech_audio *= scaler
         
-        # Get normalized mixture, speech, noise. 
+        # Get normalized mixture, speech, noise.
+        #加性噪声
         (mixed_audio, speech_audio, noise_audio, alpha) = additive_mixing(speech_audio, noise_audio)
 
         # Write out mixed audio. 
@@ -184,7 +185,8 @@ def calculate_mixture_features(args):
             data_type, "%ddb" % int(snr), "%s.p" % out_bare_na)
         create_folder(os.path.dirname(out_feat_path))
         data = [mixed_complx_x, speech_x, noise_x, alpha, out_bare_na]
-        cPickle.dump(data, open(out_feat_path, 'wb'), protocol=cPickle.HIGHEST_PROTOCOL)
+        #这个写出来的文件好像是.p文件
+        pickle.dump(data, open(out_feat_path, 'wb'), protocol=pickle.HIGHEST_PROTOCOL)
         
         # Print. 
         if cnt % 100 == 0:
@@ -212,7 +214,7 @@ def get_amplitude_scaling_factor(s, n, snr, method='rms'):
       float, scaler. 
     """
     original_sn_rms_ratio = rms(s) / rms(n)
-    target_sn_rms_ratio =  10. ** (float(snr) / 20.)    # snr = 20 * lg(rms(s) / rms(n))
+    target_sn_rms_ratio = 10. ** (float(snr) / 20.)    # snr = 20 * lg(rms(s) / rms(n))
     signal_scaling_factor = target_sn_rms_ratio / original_sn_rms_ratio
     return signal_scaling_factor
 
@@ -296,22 +298,24 @@ def pack_features(args):
     for na in names:
         # Load feature. 
         feat_path = os.path.join(feat_dir, na)
-        data = cPickle.load(open(feat_path, 'rb'))
+        data = pickle.load(open(feat_path, 'rb'))
         [mixed_complx_x, speech_x, noise_x, alpha, na] = data
         mixed_x = np.abs(mixed_complx_x)
 
         # Pad start and finish of the spectrogram with boarder values. 
-        n_pad = (n_concat - 1) / 2
+        n_pad = (n_concat - 1) // 2
         mixed_x = pad_with_border(mixed_x, n_pad)
         speech_x = pad_with_border(speech_x, n_pad)
     
-        # Cut input spectrogram to 3D segments with n_concat. 
+        # Cut input spectrogram to 3D segments with n_concat.
+        #n_concat这里是取其中的几帧作为数据的输入
+        #n_hop是帧移
         mixed_x_3d = mat_2d_to_3d(mixed_x, agg_num=n_concat, hop=n_hop)
         x_all.append(mixed_x_3d)
         
         # Cut target spectrogram and take the center frame of each 3D segment. 
         speech_x_3d = mat_2d_to_3d(speech_x, agg_num=n_concat, hop=n_hop)
-        y = speech_x_3d[:, (n_concat - 1) / 2, :]
+        y = speech_x_3d[:, (n_concat - 1) // 2, :]
         y_all.append(y)
     
         # Print. 
@@ -430,7 +434,14 @@ def np_mean_absolute_error(y_true, y_pred):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest='mode')
-
+    '''pack_features - -workspace
+    G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\BinCreate - -speech_dir
+    G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_speech - -noise_dir
+    G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_noise - -data_type
+    train - -snr
+    5 - -n_concat
+    8 - -n_hop
+    4'''
     parser_create_mixture_csv = subparsers.add_parser('create_mixture_csv')
     parser_create_mixture_csv.add_argument('--workspace', type=str, required=True)
     parser_create_mixture_csv.add_argument('--speech_dir', type=str, required=True)
