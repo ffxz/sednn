@@ -473,29 +473,30 @@ if __name__ == '__main__':
     5 - -n_concat
     8 - -n_hop
     4'''
+
     parser_create_mixture_csv = subparsers.add_parser('create_mixture_csv')
-    parser_create_mixture_csv.add_argument('--workspace', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\BinCreate')
-    parser_create_mixture_csv.add_argument('--speech_dir', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_speech')
-    parser_create_mixture_csv.add_argument('--noise_dir', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_noise')
+    parser_create_mixture_csv.add_argument('--workspace', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/BinCreate')
+    parser_create_mixture_csv.add_argument('--speech_dir', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/normal_data/train_speech')
+    parser_create_mixture_csv.add_argument('--noise_dir', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/normal_data/train_noise')
     parser_create_mixture_csv.add_argument('--data_type', type=str, default='train')
     parser_create_mixture_csv.add_argument('--magnification', type=int, default=1)
 
     parser_calculate_mixture_features = subparsers.add_parser('calculate_mixture_features')
-    parser_calculate_mixture_features.add_argument('--workspace', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\BinCreate')#required=True)
-    parser_calculate_mixture_features.add_argument('--speech_dir', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_speech')
-    parser_calculate_mixture_features.add_argument('--noise_dir', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\mini_data\train_noise')
+    parser_calculate_mixture_features.add_argument('--workspace', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/BinCreate')
+    parser_calculate_mixture_features.add_argument('--speech_dir', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/normal_data/train_speech')
+    parser_calculate_mixture_features.add_argument('--noise_dir', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/normal_data/train_noise')
     parser_calculate_mixture_features.add_argument('--data_type', type=str, default='train')
     #parser_calculate_mixture_features.add_argument('--snr', type=float, required=True)
 
     parser_pack_features = subparsers.add_parser('pack_features')
-    parser_pack_features.add_argument('--workspace', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\BinCreate')#required=True)
+    parser_pack_features.add_argument('--workspace', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/BinCreate')
     parser_pack_features.add_argument('--data_type', type=str, default='train')
     #parser_pack_features.add_argument('--snr', type=float, required=True)
     parser_pack_features.add_argument('--n_concat', type=int, default=8)
     parser_pack_features.add_argument('--n_hop', type=int, default=4)
 
     parser_compute_scaler = subparsers.add_parser('compute_scaler')
-    parser_compute_scaler.add_argument('--workspace', type=str, default='G:\研二上学期\paper\denoise\coding\BinCode\sednn\mixture2clean_dnn\BinCreate')#required=True)
+    parser_compute_scaler.add_argument('--workspace', type=str, default='/home2/sining/yan2/BinCode/sednn/mixture2clean_dnn/BinCreate')
     parser_compute_scaler.add_argument('--data_type', type=str, default='train')
     #parser_compute_scaler.add_argument('--snr', type=float, required=True)
 
